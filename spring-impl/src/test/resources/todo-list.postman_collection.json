@@ -1,0 +1,888 @@
+{
+	"info": {
+		"_postman_id": "777f72ff-4912-48bd-bf23-c97328add2b4",
+		"name": "Todo-List",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List all tasks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e70c6ea6-b17f-467a-89a8-68fc6318fef1",
+						"exec": [
+							"const schemaListAll = {",
+							"  \"type\": \"object\",",
+							"  \"required\": [",
+							"    \"content\"",
+							"  ],",
+							"  \"properties\": {",
+							"    \"content\": {",
+							"      \"type\": \"array\",",
+							"      \"items\": {",
+							"        \"type\": \"object\",",
+							"        \"required\": [",
+							"          \"id\",",
+							"          \"title\",",
+							"          \"status\"",
+							"        ],",
+							"        \"properties\": {",
+							"          \"id\": {",
+							"            \"type\": \"integer\"",
+							"          },",
+							"          \"title\": {",
+							"            \"type\": \"string\",",
+							"            \"minLength\": 1,",
+							"            \"maxLength\": 80",
+							"          },",
+							"          \"description\": {",
+							"            \"type\": [\"string\", \"null\"],",
+							"            \"minLength\": 1,",
+							"            \"maxLength\": 255",
+							"          },",
+							"          \"closedAt\": {",
+							"            \"type\": [\"string\", \"null\"],",
+							"            \"minLength\": 10,",
+							"            \"maxLength\": 10",
+							"          },",
+							"          \"status\": {",
+							"\t\t\t\"type\": \"string\"",
+							"          }",
+							"        },",
+							"\t\t\"additionalProperties\": false",
+							"      }",
+							"    }",
+							"  }",
+							"};",
+							"",
+							"pm.test(\"Status code is 200\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});",
+							"",
+							"pm.test(\"Schema Validation\", function() {",
+							"    const result = tv4.validateResult(JSON.parse(responseBody), schemaListAll);",
+							"    pm.expect(result.valid).to.be.true;",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/tasks/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert new opened task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 201\", function() {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});",
+							"",
+							"const json = JSON.parse(responseBody);",
+							"pm.globals.set(\"openedId\", json.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Contract Test\",\n    \"description\": \"Contract Test - Create all contract tests\",\n    \"status\": \"OPEN\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert new closed task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 201\", function() {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});",
+							"",
+							"const json = JSON.parse(responseBody);",
+							"pm.globals.set(\"closedId\", json.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Contract Test\",\n    \"description\": \"Contract Test - Create all contract tests\",\n    \"status\": \"CLOSE\",\n    \"closedAt\": \"2018-11-16\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert new task without status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 400\", function() {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Contract Test\",\n    \"description\": \"Contract Test - Create all contract tests\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert new task with incorrect status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 400\", function() {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Contract Test\",\n    \"description\": \"Contract Test - Create all contract tests\",\n    \"status\" : \"EDIT\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert new task without title",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 400\", function() {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"description\": \"Contract Test - Create all contract tests\",\n    \"status\" : \"OPEN\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert new closed without description",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 201\", function() {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Contract Test\",\n    \"status\": \"CLOSE\",\n    \"closedAt\": \"2018-11-16\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update opened task to closed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 200\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Contract Test\",\n    \"description\": \"Contract Test - Create all contract tests\",\n    \"status\": \"CLOSE\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/{{openedId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						"{{openedId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get the task closed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"const moment = require('moment');",
+							"const schema = {",
+							"\t\"type\": \"object\",",
+							"\t\"required\": [",
+							"\t  \"id\",",
+							"\t  \"title\",",
+							"\t  \"status\",",
+							"\t  \"closedAt\"",
+							"\t],",
+							"\t\"properties\": {",
+							"\t  \"id\": {",
+							"\t\t\"type\": \"integer\"",
+							"\t  },",
+							"\t  \"title\": {",
+							"\t\t\"type\": \"string\",",
+							"\t\t\"minLength\": 1,",
+							"\t\t\"maxLength\": 80",
+							"\t  },",
+							"\t  \"description\": {",
+							"\t\t\"type\": \"string\",",
+							"\t\t\"minLength\": 1,",
+							"\t\t\"maxLength\": 255",
+							"\t  },",
+							"\t  \"closedAt\": {",
+							"\t\t\"type\": \"string\",",
+							"\t\t\"minLength\": 10,",
+							"\t\t\"maxLength\": 10",
+							"\t  },",
+							"\t  \"status\": {",
+							"\t\t\"type\": \"string\"",
+							"\t  }",
+							"\t},",
+							"\t\"additionalProperties\": false",
+							"};",
+							"",
+							"pm.test(\"Status code is 200\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});",
+							"",
+							"pm.test(\"Validate if closeAt is equal current date\", function() {",
+							"    const task = JSON.parse(responseBody);",
+							"    const currentDate = moment().format(\"YYYY-MM-DD\");",
+							"    pm.expect(task.closedAt).to.equal(currentDate);",
+							"});",
+							"",
+							"pm.test(\"Schema Validation\", function() {",
+							"    const result = tv4.validateResult(JSON.parse(responseBody), schema);",
+							"    pm.expect(result.valid).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/tasks/{{openedId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						"{{openedId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update title on closed task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 200\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});",
+							"",
+							"pm.test(\"Validate if title was updated\", function() {",
+							"    const task = JSON.parse(responseBody);",
+							"    pm.expect(task.title).to.equal(\"Contract Test - Updated\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 16,\n    \"title\": \"Contract Test - Updated\",\n    \"description\": \"Contract Test - Create all contract tests\",\n    \"closedAt\": \"2018-11-16\",\n    \"status\": \"CLOSE\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/{{closedId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						"{{closedId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update closedAt on closed task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 200\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});",
+							"",
+							"pm.test(\"Validate if closeAt was updated\", function() {",
+							"    const task = JSON.parse(responseBody);",
+							"    pm.expect(task.closedAt).to.equal(\"2018-11-15\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 16,\n    \"title\": \"Contract Test - Updated\",\n    \"description\": \"Contract Test - Create all contract tests\",\n    \"closedAt\": \"2018-11-15\",\n    \"status\": \"CLOSE\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/{{closedId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						"{{closedId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete closed task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 204\", function() {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 16,\n    \"title\": \"Contract Test - Updated\",\n    \"description\": \"Contract Test - Create all contract tests\",\n    \"closeAt\": \"2018-11-16\",\n    \"status\": \"CLOSE\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/{{closedId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						"{{closedId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update closed task to opened",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 200\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});",
+							"",
+							"pm.test(\"Validate if closeAt is null\", function() {",
+							"    const task = JSON.parse(responseBody);",
+							"    pm.expect(task.closedAt).is.null;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 13,\n    \"title\": \"Contract Test\",\n    \"description\": \"Contract Test - Create all contract tests\",\n    \"closedAt\": \"2018-11-16\",\n    \"status\": \"OPEN\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/{{openedId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						"{{openedId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update on nonexistent task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 404\", function() {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 13,\n    \"title\": \"Contract Test\",\n    \"description\": \"Contract Test - Create all contract tests\",\n    \"closedAt\": \"2018-11-16\",\n    \"status\": \"OPEN\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/-15",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						"-15"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get on nonexistent task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 404\", function() {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{url}}/tasks/-15",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						"-15"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete on nonexistent task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a6de59e4-a1de-4189-a4d6-b037e78d93ef",
+						"exec": [
+							"pm.test(\"Status code is 404\", function() {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Content-type is json\", function() {",
+							"    const header = pm.response.headers.find(obj => obj.key === \"Content-Type\");",
+							"    pm.expect(header.value).to.equal(\"application/json;charset=utf-8\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 13,\n    \"title\": \"Contract Test\",\n    \"description\": \"Contract Test - Create all contract tests\",\n    \"closeAt\": \"2018-11-16\",\n    \"status\": \"OPEN\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/tasks/-15",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"tasks",
+						"-15"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
