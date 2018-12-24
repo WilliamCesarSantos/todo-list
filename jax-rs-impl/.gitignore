@@ -1,0 +1,19 @@
+syntax: glob
+.classpath
+.gradle
+.idea
+.settings
+.pmd
+.project
+bin
+build
+classes
+logs
+dist
+docs
+hgignore_global.txt
+node_modules
+test-output
+*.log
+*.orig
+out
